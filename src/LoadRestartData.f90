@@ -34,11 +34,14 @@ subroutine LoadRestartData
   USE ModuleThermo
   USE ModuleRestart
   USE ModuleThermoIO
+  USE ModuleGEMSolver
 
   implicit none
 
-  integer                              :: i, j
+  integer                              :: i, j, k
   integer,     dimension(0:118)        :: iElementsUsed
+  real(8)                              :: dChemPotSpecies
+  logical      :: lAddPhase
 
   ! Initialize storage variables if not allocated already
   if (.NOT. lRestartAvailable) then
@@ -58,8 +61,33 @@ subroutine LoadRestartData
   ! Save old chemical potential data
   if (.NOT. allocated(dChemicalPotential)) allocate(dChemicalPotential(nSpecies))
   if (.NOT. allocated(dElementPotential)) allocate(dElementPotential(nElements))
-  dChemicalPotential  = dChemicalPotential_Old
+  ! dChemicalPotential  = dChemicalPotential_Old
   dElementPotential   = dElementPotential_Old
+
+  dChemPotSpecies = 0D0
+  do k = 1, nSpecies
+      dChemPotSpecies = 0D0
+      do j = 1, nElements
+          dChemPotSpecies = dChemPotSpecies + dElementPotential(j) * dStoichSpecies(k,j)
+      end do
+      dChemPotSpecies = dChemPotSpecies / iParticlesPerMole(k)
+      print *, dChemPotSpecies, dChemicalPotential_Old(k), iParticlesPerMole(k)
+  end do
+
+  do j = 1, nSolnPhasesSys
+      lAddPhase         = .FALSE.
+      ! Only compute the mole fractions of constituents belonging to unstable phases:
+      if (lSolnPhases(j) .EQV. .FALSE.) then
+          if (lMiscibility(j) .EQV. .TRUE.) then
+              ! Check for a miscibility gap:
+              call CheckMiscibilityGap(j,lAddPhase)
+          else
+              ! This is phase does not contain a miscibility gap.  Compute the mole fractions:
+              call CompMolFraction(j)
+          end if
+      end if
+  end do
+
   ! Save old phase data
   if (.NOT. allocated(iAssemblage)) allocate(iAssemblage(nElements))
   if (.NOT. allocated(dMolesPhase)) allocate(dMolesPhase(nElements))
