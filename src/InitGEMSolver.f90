@@ -174,7 +174,6 @@ subroutine InitGEMSolver
     iAssemblage             = 0
     dMolesPhaseLast         = dMolesPhase
     dMolesPhase             = 0D0
-    dMolFraction            = 0.1D0
     dMolesSpecies           = 0D0
     dTempVec                = 0D0
     dPartialExcessGibbs     = 0D0
@@ -187,7 +186,6 @@ subroutine InitGEMSolver
     ! Regrettably, branching here depending on whether restart data has been loaded
     IF_RestartLoaded: if (lRestartLoaded) then
       iAssemblage = iAssemblageLast
-      dMolFraction = dMolFraction_Old
       do i = 1, nElements
         dMolesPhase = dMolesPhaseLast
         if (iAssemblageLast(i) < 0) then
@@ -199,6 +197,7 @@ subroutine InitGEMSolver
       end do
     ! If there is no restart data use old methods:
     else
+      dMolFraction            = 0.1D0
       ! Calculate the total number of moles for each solution phase:
       do i = 1, nElements
           j           = iPhase(iAssemblageLast(i))
