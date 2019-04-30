@@ -131,7 +131,7 @@ subroutine LoadRestartData
 
   nMaxSolutionPhases = nElements - nConPhases
   allocate(dMinDrivingForces(nMaxSolutionPhases))
-  dDrivingForceCutoff = 1D0
+  dDrivingForceCutoff = 0D0
   dMinDrivingForces = dDrivingForceCutoff
   nSolnPhases = 0
   do j = 1, nSolnPhasesSys
@@ -144,9 +144,13 @@ subroutine LoadRestartData
       end do
       ! print *, dDrivingForceSum(j), cSolnPhaseName(j)
       if (dDrivingForceSum(j) < MAXVAL(dMinDrivingForces)) then
-          iAssemblage(nElements - nSolnPhases) = -j
-          nSolnPhases = nSolnPhases + 1
-          dMinDrivingForces(MAXLOC(dMinDrivingForces)) = dDrivingForceSum(j)
+          if (nSolnPhases < nMaxSolutionPhases) then
+              iAssemblage(nElements - nSolnPhases) = -j
+              nSolnPhases = nSolnPhases + 1
+              dMinDrivingForces(MAXLOC(dMinDrivingForces)) = dDrivingForceSum(j)
+          else
+              ! write something here if we have to replace a phase
+          end if
       end if
   end do
 
