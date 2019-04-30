@@ -132,7 +132,7 @@ subroutine LoadRestartData
   do j = MAXVAL(nSpeciesPhase) + 1, nSpecies
       i = j + nSolnPhasesSys - MAXVAL(nSpeciesPhase)
       dDrivingForceSum(i) = dDrivingForce(j)
-      print *, dDrivingForceSum(i), cSpeciesName(j)
+      ! print *, dDrivingForceSum(i), cSpeciesName(j)
       if (dDrivingForce(j) < 1D-12) then
           nConPhases = nConPhases + 1
           iAssemblage(nConPhases) = j
@@ -152,7 +152,7 @@ subroutine LoadRestartData
       do i = iFirst, iLast
           dDrivingForceSum(j) = dDrivingForceSum(j) + dDrivingForce(i)
       end do
-      print *, dDrivingForceSum(j), cSolnPhaseName(j)
+      ! print *, dDrivingForceSum(j), cSolnPhaseName(j)
       if (dDrivingForceSum(j) < MAXVAL(dMinDrivingForces)) then
           iAssemblage(nElements - nSolnPhases) = -j
           nSolnPhases = nSolnPhases + 1
@@ -160,34 +160,7 @@ subroutine LoadRestartData
       end if
   end do
 
-
-
-
-  ! if (dMaxDrivingForce < MINVAL(dDrivingForceSoln)) then
-  !
-  !     ! 4A) Check if a pure condensed phase should be added/swapped:
-  !     call CheckPureConPhaseAdd(iMaxDrivingForce, dMaxDrivingForce)
-  !
-  !     ! 5A) Check if a solution phase should be added/swapped:
-  !     call CheckSolnPhaseAdd
-  !
-  ! else
-  !
-  !     ! 4B) Check if a solution phase should be added/swapped:
-  !     call CheckSolnPhaseAdd
-  !
-  !     ! 5B) Check if a pure condensed phase should be added/swapped:
-  !     call CheckPureConPhaseAdd(iMaxDrivingForce, dMaxDrivingForce)
-  !
-  ! end if
-
-  ! Save old phase data
-  ! if (.NOT. allocated(iAssemblage)) allocate(iAssemblage(nElements))
-  ! if (.NOT. allocated(dMolesPhase)) allocate(dMolesPhase(nElements))
-  ! if (.NOT. allocated(dMolFraction)) allocate(dMolFraction(nSpecies))
-  ! iAssemblage         = iAssemblage_Old
-  ! dMolesPhase         = dMolesPhase_Old
-  ! dMolFraction        = dMolFraction_Old
+  call CompMolAllSolnPhases
 
   lRestartLoaded = .TRUE.
 
