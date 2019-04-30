@@ -39,20 +39,11 @@ subroutine SaveRestartData
 
   ! Initialize storage variables if not allocated already
   if (.NOT. lRestartAvailable) then
-    allocate(dMolesPhase_Old(nElements),dChemicalPotential_Old(nSpecies),dElementPotential_Old(nElements),&
-    dMolFraction_Old(nSpecies))
-    allocate(iAssemblage_Old(nElements))
+    allocate(dElementPotential_Old(nElements))
   endif
 
   ! Save old chemical potential data
-  dChemicalPotential_Old  = dChemicalPotential
   dElementPotential_Old   = dElementPotential
-  ! Save old phase data
-  iAssemblage_Old         = iAssemblage
-  dMolesPhase_Old         = dMolesPhase
-  dMolFraction_Old        = dMolFraction
-  ! Save which elements were included
-  iElementsUsed_Old       = min(ceiling(dElementMass),1)
 
   ! Set restart data flag to true
   lRestartAvailable = .TRUE.
