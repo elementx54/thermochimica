@@ -30,7 +30,7 @@ program RestartTestCO
 
   implicit none
   integer :: i
-  real    :: start, finish
+  ! real    :: start, finish
 
   ! Initialize variables:
   dTemperature            = 300D0
@@ -58,16 +58,17 @@ program RestartTestCO
   call SaveRestartData
 
   ! Call Thermochimica a bunch more for timing
-  call cpu_time(start)
+  ! call cpu_time(start)
   LOOP_time: do i = 1,1000
+    call ResetThermo
     dTemperature            = 300D0
     dPressure               = 1D0
     dElementMass            = 1D0
     lRestartRequested       = .TRUE.
     call Thermochimica
   end do LOOP_time
-  call cpu_time(finish)
-  print '("Time = ",f6.3," seconds.")',finish-start
+  ! call cpu_time(finish)
+  ! print '("Time = ",f6.3," seconds.")',finish-start
 
   ! Print second run output
   if (iPrintResultsMode > 0)  call PrintResults
