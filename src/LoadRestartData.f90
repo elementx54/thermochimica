@@ -39,8 +39,7 @@ subroutine LoadRestartData
   implicit none
 
   integer                              :: i, j, k, l, iFirst, iLast, nVar, nTotalPhases, nMaxSolutionPhases
-  integer,     dimension(0:118)        :: iElementsUsed
-  real(8)                              :: dChemPotSpecies, dMaxDrivingForce, dStoichSum, dDrivingForceCutoff
+  real(8)                              :: dStoichSum, dDrivingForceCutoff
   real(8), dimension(:),   allocatable :: dChemicalPotentialStar, dDrivingForce, dDrivingForceSum
   real(8), dimension(:),   allocatable :: dMinDrivingForces
   logical      :: lAddPhase
@@ -55,25 +54,8 @@ subroutine LoadRestartData
   if (.NOT. allocated(dChemicalPotential)) allocate(dChemicalPotential(nSpecies))
   if (.NOT. allocated(dElementPotential)) allocate(dElementPotential(nElements))
   dElementPotential   = dElementPotential_Old
-
   allocate(dChemicalPotentialStar(nSpecies),dDrivingForce(nSpecies))
-  dChemPotSpecies = 0D0
-  do k = 1, nSpecies
-      dChemPotSpecies = 0D0
-      dStoichSum = 0
-      do j = 1, nElements
-          dChemPotSpecies = dChemPotSpecies + dElementPotential(j) * dStoichSpecies(k,j)
-          dStoichSum = dStoichSum + dStoichSpecies(k,j)
-      end do
-      if (k < MAXVAL(nSpeciesPhase)) then
-          dChemPotSpecies = dChemPotSpecies / iParticlesPerMole(j)
-      else
-          dChemPotSpecies = dChemPotSpecies / dStoichSum
-      end if
-      ! print *, dChemPotSpecies, cSpeciesName(k), iParticlesPerMole(j)
-      dChemicalPotentialStar(k) = dChemPotSpecies
-  end do
-
+  dChemicalPotentialStar = 0D0
   l = MAX(1,nSolnPhasesSys)
   allocate(dMolesSpecies(nSpecies))
   allocate(dPartialExcessGibbs(nSpecies),dPartialExcessGibbsLast(nSpecies))
@@ -103,16 +85,25 @@ subroutine LoadRestartData
       call CompExcessGibbsEnergy(j)
   end do
 
-
-  do j = 1, nSpecies
-      ! Update the driving force:
-      if (j < MAXVAL(nSpeciesPhase)) then
-          dDrivingForce(j) = dMolFraction(j) * (dChemicalPotential(j) - dChemicalPotentialStar(j))
+  do k = 1, nSpecies
+      dChemicalPotentialStar(k) = 0D0
+      dStoichSum = 0
+      do j = 1, nElements
+          dChemicalPotentialStar(k) = dChemicalPotentialStar(k) + dElementPotential(j) * dStoichSpecies(k,j)
+          dStoichSum = dStoichSum + dStoichSpecies(k,j)
+      end do
+      if (k < MAXVAL(nSpeciesPhase)) then
+          dChemicalPotentialStar(k) = dChemicalPotentialStar(k) / iParticlesPerMole(j)
       else
-          dDrivingForce(j) = (dChemicalPotential(j) - dChemicalPotentialStar(j))
+          dChemicalPotentialStar(k) = dChemicalPotentialStar(k) / dStoichSum
       end if
-      ! print *, dDrivingForce(j), dChemicalPotential(j), dChemicalPotentialStar(j), iParticlesPerMole(j), &
-      !          cSpeciesName(j), dMolFraction(j)
+
+      ! Update the driving force:
+      if (k < MAXVAL(nSpeciesPhase)) then
+          dDrivingForce(k) = dMolFraction(k) * (dChemicalPotential(k) - dChemicalPotentialStar(k))
+      else
+          dDrivingForce(k) = (dChemicalPotential(k) - dChemicalPotentialStar(k))
+      end if
   end do
 
   nTotalPhases = nSolnPhasesSys + (nSpecies - MAXVAL(nSpeciesPhase))
