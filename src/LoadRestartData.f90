@@ -51,9 +51,10 @@ subroutine LoadRestartData
   endif
 
   ! Save old chemical potential data
-  if (.NOT. allocated(dChemicalPotential)) allocate(dChemicalPotential(nSpecies))
   if (.NOT. allocated(dElementPotential)) allocate(dElementPotential(nElements))
+  if (.NOT. allocated(dChemicalPotential)) allocate(dChemicalPotential(nSpecies))
   dElementPotential   = dElementPotential_Old
+  dChemicalPotential = 0D0
   allocate(dChemicalPotentialStar(nSpecies),dDrivingForce(nSpecies))
   dChemicalPotentialStar = 0D0
   l = MAX(1,nSolnPhasesSys)
