@@ -7,9 +7,8 @@ program dmu
 
     implicit none
 
-    integer :: iElem, iDerMode!, iElemLoc
-    real(8) :: dDelta, dDChemPot!, dElemChemPot, dOriginalElemMass
-    ! real(8) :: dElemChemPotPP, dElemChemPotP, dElemChemPotM, dElemChemPotMM
+    integer :: iElem, iDerMode
+    real(8) :: dDelta, dDChemPot
 
 
     ! Specify units:
@@ -17,7 +16,6 @@ program dmu
     cInputUnitPressure    = 'atm'
     cInputUnitMass        = 'moles'
     cThermoFileName       = DATA_DIRECTORY // 'Ted_Data_files/UO2-FP_no_Gd_hcp_A3.dat'
-    ! cThermoFileName       = DATA_DIRECTORY // 'Ted_Data_files/UO2-FPEdited.dat'
 
     ! Specify values:
     dTemperature          = 1500D0
@@ -59,68 +57,12 @@ program dmu
     ! Call Thermochimica:
     if (INFOThermo == 0)        call Thermochimica
 
-    ! Perform post-processing of results:
-    ! if (iPrintResultsMode > 0)  call PrintResults
-
-    ! Save reinit data
-    ! call SaveReinitData
-
     iElem = 8
     dDelta = 1D-5
     iDerMode = 4
     INFO = 0
 
     call CompDChemicalPotentialDC(iElem, dDelta, iDerMode, dDChemPot, INFO)
-
-    ! LOOP_findElem: do iElemLoc = 1, nElements
-    !   if (iElementSystem(iElemLoc) == iElem) EXIT LOOP_findElem
-    ! end do LOOP_findElem
-    ! dElemChemPot = dElementPotential(iElemLoc)
-    ! dOriginalElemMass = dElementMass(iElem)
-    !
-    ! call ResetThermo
-    !
-    ! ! Load reinit data
-    ! lReinitRequested = .TRUE.
-    !
-    ! ! Call Thermochimica again with new concentration:
-    ! dElementMass = dElementMass * dNormalizeInput
-    ! dElementMass(iElem) = dOriginalElemMass * (1D0 + dDelta)
-    ! if (INFOThermo == 0)        call Thermochimica
-    ! ! if (iPrintResultsMode > 0)  call PrintResults
-    ! dElemChemPotP = dElementPotential(iElemLoc)
-    !
-    ! call ResetThermo
-    !
-    ! ! Call Thermochimica again with new concentration:
-    ! dElementMass = dElementMass * dNormalizeInput
-    ! dElementMass(iElem) = dOriginalElemMass * (1D0 - dDelta)
-    ! if (INFOThermo == 0)        call Thermochimica
-    ! ! if (iPrintResultsMode > 0)  call PrintResults
-    ! dElemChemPotM = dElementPotential(iElemLoc)
-    !
-    ! ! 2-point first derivative
-    ! dDChemPot = (dElemChemPotP - dElemChemPotM) / (2D0 * dDelta * dOriginalElemMass)
-    ! dDChemPot = dDChemPot * dIdealConstant * dTemperature
-    ! print *, dDChemPot
-    !
-    ! ! Call Thermochimica again with new concentration:
-    ! dElementMass = dElementMass * dNormalizeInput
-    ! dElementMass(iElem) = dOriginalElemMass * (1D0 + 2D0*dDelta)
-    ! if (INFOThermo == 0)        call Thermochimica
-    ! ! if (iPrintResultsMode > 0)  call PrintResults
-    ! dElemChemPotPP = dElementPotential(iElemLoc)
-    !
-    ! ! Call Thermochimica again with new concentration:
-    ! dElementMass = dElementMass * dNormalizeInput
-    ! dElementMass(iElem) = dOriginalElemMass * (1D0 - 2D0*dDelta)
-    ! if (INFOThermo == 0)        call Thermochimica
-    ! ! if (iPrintResultsMode > 0)  call PrintResults
-    ! dElemChemPotMM = dElementPotential(iElemLoc)
-    !
-    ! ! 4-point first derivative
-    ! dDChemPot = (-dElemChemPotPP + 8D0*dElemChemPotP - 8D0*dElemChemPotM + dElemChemPotMM) / (12D0 * dDelta * dOriginalElemMass)
-    ! dDChemPot = dDChemPot * dIdealConstant * dTemperature
     print *, dDChemPot
 
     ! Destruct everything:
