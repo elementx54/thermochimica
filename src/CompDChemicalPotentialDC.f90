@@ -41,7 +41,7 @@ subroutine CompDChemicalPotentialDC(iElem, dDelta, iDerMode, dDChemPot, INFO)
     ! if (iPrintResultsMode > 0)  call PrintResults
     dElemChemPotM = dElementPotential(iElemLoc)
 
-    if (iDerMode == 4) then
+    if (iDerMode == 5) then
         ! Call Thermochimica again with new concentration:
         dElementMass = dElementMass * dNormalizeInput
         dElementMass(iElem) = dOriginalElemMass * (1D0 + 2D0*dDelta)
@@ -56,10 +56,10 @@ subroutine CompDChemicalPotentialDC(iElem, dDelta, iDerMode, dDChemPot, INFO)
         ! if (iPrintResultsMode > 0)  call PrintResults
         dElemChemPotMM = dElementPotential(iElemLoc)
 
-        ! 4-point first derivative
+        ! 5-point stencil first derivative
         dDChemPot = (-dElemChemPotPP + 8D0*dElemChemPotP - 8D0*dElemChemPotM + dElemChemPotMM) / (12D0 * dDelta * dOriginalElemMass)
     else
-        ! 2-point first derivative
+        ! central difference method first derivative
         dDChemPot = (dElemChemPotP - dElemChemPotM) / (2D0 * dDelta * dOriginalElemMass)
     end if
     dElementMass(iElem) = dOriginalElemMass
