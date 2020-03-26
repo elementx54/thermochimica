@@ -22,7 +22,7 @@
 ## ===================
 AR          = ar
 FC          = gfortran
-FCFLAGS     = -Wall -g -O0 -fno-automatic -fbounds-check -ffpe-trap=zero -D"DATA_DIRECTORY='$(DATA_DIR)'"
+FCFLAGS     = -Wall -g -O0 -fno-automatic -fbounds-check -ffpe-trap=zero -fPIC -D"DATA_DIRECTORY='$(DATA_DIR)'"
 #FCFLAGS     = -Wall -g -fbounds-check
 #FCFLAGS     = -Wall -g -O0 -fno-automatic -fbounds-check
 #LDFLAGS     = -framework Accelerate -g -fbounds-check
@@ -65,10 +65,12 @@ MODS_LNK    = $(addprefix $(OBJ_DIR)/,$(MODS_SRC))
 ## SHARED LIBRARIES:
 ## =================
 TC_LIB      = libthermochimica.a
+SO_LIB      = libthermochimica.so
 SHARED_SRC  = $(foreach dir,$(SHARED_DIR),$(notdir $(wildcard $(dir)/*.f90)))
 SHARED_OBJ  = $(SHARED_SRC:.f90=.o)
 SHARED_LNK  = $(addprefix $(OBJ_DIR)/,$(SHARED_OBJ))
-SHARED_LIB  = $(OBJ_DIR)/$(TC_LIB)
+ARCHIV_LIB  = $(OBJ_DIR)/$(TC_LIB)
+SHARED_LIB  = $(OBJ_DIR)/$(SO_LIB)
 
 ## ============
 ## OLD EXECUTABLES:
@@ -101,7 +103,7 @@ WTST_BIN    = $(addprefix $(BIN_DIR)/,$(WTST_OBJ))
 ## =======
 ## COMPILE
 ## =======
-all:  directories $(MODS_LNK) $(SHARED_LNK) $(SHARED_LIB) $(EXEC_LNK) $(EXE_BIN)
+all:  directories $(MODS_LNK) $(SHARED_LNK) $(EXEC_LNK) $(EXE_BIN)
 
 directories: ${OBJ_DIR} ${BIN_DIR}
 
@@ -120,8 +122,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.f90
 $(OBJ_DIR)/%.o: $(TST_DIR)/%.F90
 	$(FC) -I$(OBJ_DIR) -J$(OBJ_DIR) $(FCFLAGS) -c $< -o $@
 
-$(SHARED_LIB): $(SHARED_LNK)
+$(ARCHIV_LIB): $(SHARED_LNK)
 	$(AR) rcs $@ $^
+
+$(SHARED_LIB): $(SHARED_LNK)
+	$(FC) -shared -o $@ $^
 
 $(BIN_DIR)/%: $(OBJ_DIR)/%.o $(SHARED_LNK)
 	$(FC) -I$(OBJ_DIR) -J$(OBJ_DIR) $(FCFLAGS) $(LDFLAGS) -o $(BIN_DIR)/$* $< $(SHARED_LNK) $(LDLOC)
@@ -138,6 +143,7 @@ clean:
 veryclean: clean cleandoc
 	rm -fr $(BIN_DIR)/*
 	rm -f *.mod
+	rm -fr libs/*
 
 
 ## =======
@@ -147,11 +153,17 @@ ifeq ($(PREFIX),)
   PREFIX := /usr/local
 endif
 
-install: $(SHARED_LIB)
+install: $(ARCHIV_LIB)
 	install -d $(DESTDIR)$(PREFIX)/lib/
-	install -m 644 $(SHARED_LIB) $(DESTDIR)$(PREFIX)/lib/
+	install -m 644 $(ARCHIV_LIB) $(DESTDIR)$(PREFIX)/lib/
 	install -d $(DESTDIR)$(PREFIX)/include/
 	install -m 644 $(OBJ_DIR)/*.mod $(DESTDIR)$(PREFIX)/include/
+
+install-so: $(SHARED_LIB)
+	${MKDIR_P} $(DESTDIR)$(PREFIX)/lib
+	cp $(SHARED_LIB) $(DESTDIR)$(PREFIX)/lib/$(addsuffix .1.0,$(SO_LIB))
+	ln -sf $(DESTDIR)$(PREFIX)/lib/$(addsuffix .1.0,$(SO_LIB)) $(DESTDIR)$(PREFIX)/lib/$(addsuffix .1,$(SO_LIB))
+	ln -sf $(DESTDIR)$(PREFIX)/lib/$(addsuffix .1.0,$(SO_LIB)) $(DESTDIR)$(PREFIX)/lib/$(SO_LIB)
 
 ## =============
 ## DOCUMENTATION
