@@ -1,4 +1,4 @@
-program liquidus
+subroutine FindLiquidus(cLiqName, dLiquidus, dLiqTol, dDriveScale)
 
     USE ModuleThermoIO
     USE ModuleThermo
@@ -7,39 +7,15 @@ program liquidus
 
     implicit none
 
-    character(25) :: cLiqName
+    character(25), intent(in)  :: cLiqName
     logical       :: liqFound, tolReached
     integer       :: i, j, iLiq
-    real(8)       :: dLiqGibbs, dEquilGibbs, dLiqDrive, dLiqTol, dStep, dDriveScale
+    real(8)       :: dLiqGibbs, dEquilGibbs, dLiqDrive, dStep
+    real(8),       intent(in)  :: dLiqTol, dDriveScale
+    real(8),       intent(out) :: dLiquidus
 
-    ! Specify units:
-    cInputUnitTemperature = 'K'
-    cInputUnitPressure    = 'atm'
-    cInputUnitMass        = 'moles'
-    cThermoFileName       = DATA_DIRECTORY // 'Kaye_NobleMetals.dat'
-
-    ! Specify values:
-    dTemperature          = 2000D0
-    dPressure             = 1.0D0
-    dElementMass          = 0D0
-    dElementMass(46)      = 0.9D0                              ! Pd
-    dElementMass(44)      = 0.1D0                              ! Ru
-    dElementMass(43)      = 0.0D0                              ! Tc
-    dElementMass(42)      = 1.9D0                              ! Mo
-
-    ! Specify output and debug modes:
-    iPrintResultsMode     = 2
-    lDebugMode            = .FALSE.
-    cLiqName = 'LiqN'
     liqFound = .FALSE.
-    dLiqTol  = 1D-3
-    dDriveScale = 1D2
     lReinitRequested = .TRUE.
-
-    ! Parse the ChemSage data-file:
-    call ParseCSDataFile(cThermoFileName)
-
-    if (INFOThermo == 0)        call Thermochimica
 
     do i = 1, nSolnPhasesSys
       if (cSolnPhaseName(i)== cLiqName) iLiq = i
@@ -118,7 +94,6 @@ program liquidus
 
     end do
 
-    if (iPrintResultsMode > 0)  call PrintResults
+    dLiquidus = dTemperature
 
-
-end program liquidus
+end subroutine FindLiquidus
