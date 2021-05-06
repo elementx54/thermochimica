@@ -142,7 +142,7 @@ subroutine ThermoDEBUG
     elseif (INFOThermo == 41) then
         print *, 'DEBUG: Error finding stoichiometry in terms of compounds.'
     elseif (INFOThermo == 42) then
-        print *, 'DEBUG: Excess mixing term in SUBG/SUBQ phase not supported.'
+        print *, 'DEBUG: Excess mixing term in SUBG/SUBQ/SUBM phase not supported.'
     elseif (INFOThermo == 43) then
         print *, 'DEBUG: An unsupported type of magnetic mixing parameter is included in the data-file.'
         print *, ' Thermochimica is currently capable of handling: binary terms.'

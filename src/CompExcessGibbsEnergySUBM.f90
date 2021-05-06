@@ -1,8 +1,8 @@
 
     !-------------------------------------------------------------------------------------------------------------
     !
-    !> \file    CompExcessGibbsEnergySUBG.f90
-    !> \brief   Compute the partial molar excess Gibbs energy of mixing of solution phase species in a SUBG
+    !> \file    CompExcessGibbsEnergySUBM.f90
+    !> \brief   Compute the partial molar excess Gibbs energy of mixing of solution phase species in a SUBM
     !!           phase.
     !> \author  M.H.A. Piro
     !> \date    December 10, 2018
@@ -26,7 +26,7 @@
     ! ========
     !
     !> \details The purpose of this subroutine is to compute the chemical potentials of pairs of species
-    !! (short range order) in a non-ideal solution phase designated as 'SUBG', which is a modified
+    !! (short range order) in a non-ideal solution phase designated as 'SUBM', which is a modified
     !! quasichemical model (MQM). A unique characteristic of the MQM model is that the focus is not
     !! placed on the species (aka 'compound end members'), but rather the pairs of nearest neigbours.
     !! For example, if one had a binary solution phase A-B, this model consideres A-A, B-B, and A-B
@@ -34,7 +34,7 @@
     !! of species rather than the species themselves, this considerably changes the calculation in
     !! comparison to other models (e.g., QKTO, RBMK, SUBL).
     !!
-    !! For more information on the SUBG model and the derivation of equations, the reader is referred
+    !! For more information on the SUBM model and the derivation of equations, the reader is referred
     !! to the following literature:
     !!
     !!      A.D. Pelton, S.A. Degterov, G. Eriksson, C. Robelin, Y. Dessureault, ``The Modified
@@ -63,7 +63,7 @@
     !-------------------------------------------------------------------------------------------------------------
 
 
-subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
+subroutine CompExcessGibbsEnergySUBM(iSolnIndex)
 
     USE ModuleThermo
     USE ModuleThermoIO
@@ -88,8 +88,7 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
 
 
     ! Only proceed if the correct phase type is selected:
-    if (.NOT. (cSolnPhaseType(iSolnIndex) == 'SUBG' .OR. cSolnPhaseType(iSolnIndex) == 'SUBQ').OR. &
-    (cSolnPhaseType(iSolnIndex) == 'SUBM')) return
+    if (.NOT. (cSolnPhaseType(iSolnIndex) == 'SUBM')) return
 
     ! Define temporary variables for sake of convenience:
     iFirst = nSpeciesPhase(iSolnIndex-1) + 1
@@ -298,14 +297,8 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
         if (ii /= jj) iWeight = iWeight * 2
         if (kk /= ll) iWeight = iWeight * 2
 
-        ! SUBG and SUBQ differ in entropy calculation by the powers to which X_i/j and Y_i are raised
-        if (cSolnPhaseType(iSolnIndex) == 'SUBG') then
-            dPowXij = 1D0
-            dPowYi  = 1D0
-        else if (cSolnPhaseType(iSolnIndex) == 'SUBQ') then
-            dPowXij = 0.75D0
-            dPowYi  = 0.5D0
-        else if (cSolnPhaseType(iSolnIndex) == 'SUBM') then
+        ! SUBM and SUBQ differ in entropy calculation by the powers to which X_i/j and Y_i are raised
+        if (cSolnPhaseType(iSolnIndex) == 'SUBM') then
             dPowXij = 1D0
             dPowYi  = 1D0
        end if
@@ -787,4 +780,4 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
 
     return
 
-end subroutine CompExcessGibbsEnergySUBG
+end subroutine CompExcessGibbsEnergySUBM

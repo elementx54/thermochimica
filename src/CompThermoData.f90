@@ -138,7 +138,8 @@ subroutine CompThermoData
 
     ! Loop through all species in the system:
     LOOP_nPhasesCS: do n = 1, nSolnPhasesSysCS
-        if ((cSolnPhaseTypeCS(n) == 'SUBG') .OR. (cSolnPhaseTypeCS(n) == 'SUBQ')) then
+        if ((cSolnPhaseTypeCS(n) == 'SUBG') .OR. (cSolnPhaseTypeCS(n) == 'SUBQ').OR. &
+        (cSolnPhaseTypeCS(n) == 'SUBM')) then
             iSublPhaseIndex = iPhaseSublatticeCS(n)
             iFirst = nSpeciesPhaseCS(n - 1) + 1
             dChemicalPotentialTemp = 0D0
@@ -563,7 +564,8 @@ subroutine CompThermoData
     LOOP_SolnPhases: do i = 1, nSolnPhasesSysCS
 
         if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM') &
-        .OR.(cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ' )) nCounter = nCounter + 1
+        .OR.(cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ' ) &
+       .OR.(cSolnPhaseTypeCS(i) == 'SUBM')) nCounter = nCounter + 1
 
         LOOP_Param: do j = nParamPhaseCS(i-1) + 1, nParamPhaseCS(i)
 
@@ -593,7 +595,7 @@ subroutine CompThermoData
                             iRegularParam(n,iRegularParamCS(j,1)+2) = iSpeciesPass(m)
                         end if
 
-                    case ('SUBG','SUBQ')
+                    case ('SUBG','SUBQ','SUBM')
 
                         ! Must remove unused constituents from iRegularParam
                         iSublPhaseIndex = iPhaseSublatticeCS(i)

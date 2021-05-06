@@ -125,7 +125,8 @@ subroutine ParseCSDataBlock
 
         ! Count sublattice phases
         if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-             (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ')) then
+             (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+             (cSolnPhaseTypeCS(i) == 'SUBM')) then
              nCountSublatticeCS = nCountSublatticeCS + 1
              iPhaseSublatticeCS(i) = nCountSublatticeCS
         end if
@@ -165,6 +166,16 @@ subroutine ParseCSDataBlock
               return
             end if
 
+          elseif (cSolnPhaseTypeCS(i) == 'SUBM') then
+
+              ! Read in two integers representing the number of species and the number of pairs:
+              read (1,*,IOSTAT = INFO) nPairsSROCS(nCountSublatticeCS,1:2)
+
+              if (INFO /= 0) then
+                INFO = 1600 + i;
+                return
+              end if
+
         elseif (cSolnPhaseTypeCS(i) == 'SUBQ') then
             ! Do I need to do this?
             ! The SUBQ phase data files seems to not have the magnetic term so skipping this part.
@@ -181,7 +192,8 @@ subroutine ParseCSDataBlock
             ! than the number of pair fractions. The # of species indicated in the
             ! header file actually represents the number of pairs. Therefore, there are
             ! fewer species listed than what has been allocated.
-            if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ') then
+            if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ'.OR. &
+            (cSolnPhaseTypeCS(i) == 'SUBM')) then
                 if (j >= nSpeciesPhaseCS(i-1) + 1 + nPairsSROCS(nCountSublatticeCS,1) ) then
                     exit LOOP_SpeciesInSolnPhase
                 end if
@@ -194,7 +206,8 @@ subroutine ParseCSDataBlock
             ! Store the phase index corresponding to the current species:
             iPhaseCS(j) = i
 
-            if ((cSolnPhaseTypeCS(i) == 'SUBG') .OR. (cSolnPhaseTypeCS(i) == 'SUBQ')) then
+            if ((cSolnPhaseTypeCS(i) == 'SUBG') .OR. (cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+            (cSolnPhaseTypeCS(i) == 'SUBM')) then
               ! The following subroutine parses the Gibbs energy equations (entries 3-5):
               call ParseCSDataBlockGibbs(i,j,iCounterGibbsEqn)
 
@@ -259,6 +272,12 @@ subroutine ParseCSDataBlock
 
                 ! Parse the data-block section for SUBQ phases:
                 call ParseCSDataBlockSUBG(i)
+
+                ! Quadruplet quasichemical model:
+              case ('SUBM')
+
+                    ! Parse the data-block section for SUBQ phases:
+                    call ParseCSDataBlockSUBG(i)
 
             case default
 

@@ -222,7 +222,8 @@ subroutine PrintResultsSolnPhase
             print '(A35,F10.5)', 'Magnetic moment per atom = ', B
         end if
 
-        if ((cSolnPhaseType(l)) == 'SUBG' .OR. (cSolnPhaseType(l) == 'SUBQ')) then
+        if ((cSolnPhaseType(l)) == 'SUBG' .OR. (cSolnPhaseType(l) == 'SUBQ').OR. &
+            (cSolnPhaseType(l)) == 'SUBM') then
             call CalculateCompositionSUBG(iSolnIndex=l,dMolesPairs=dMolesPairs,lPrint=.TRUE.)
             print *, 'Quadruplet fractions:'
         end if

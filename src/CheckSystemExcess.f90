@@ -71,7 +71,8 @@ subroutine CheckSystemExcess
         l = MAXVAL(iSpeciesPass(j:k))
 
         if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-             (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ')) then
+             (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+             (cSolnPhaseTypeCS(i) == 'SUBM')) then
             nCountSublatticeCS = nCountSublatticeCS + 1
         end if
 
@@ -265,7 +266,7 @@ subroutine CheckSystemExcess
 
                 nParamPhase(nCounter) = nParam
 
-            case ('SUBG', 'SUBQ')
+            case ('SUBG', 'SUBQ', 'SUBM')
                 ! Check if the constituents pass for a phase with a sublattice:
                 nCountSublattice                 = nCountSublattice + 1
                 iPhaseSublattice(nCounter)       = nCountSublattice

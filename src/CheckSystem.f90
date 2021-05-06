@@ -279,7 +279,8 @@ subroutine CheckSystem
                 nSpecies = nSpecies + 1
                 m = m + 1
                 iSpeciesPass(j) = m
-                if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ') then
+                if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ' .OR. &
+                   cSolnPhaseTypeCS(i) == 'SUBM') then
                     k = iPhaseSublatticeCS(i)
                     iCon1 = iPairIDCS(k,j-nSpeciesPhaseCS(i-1),1)
                     iCon2 = iPairIDCS(k,j-nSpeciesPhaseCS(i-1),2)
@@ -315,7 +316,8 @@ subroutine CheckSystem
 
             ! Store temporary counter for the number of charged phases from the CS data-file:
             if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-                 (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ')) then
+                 (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                 (cSolnPhaseTypeCS(i) == 'SUBM')) then
                 nCountSublatticeTemp = nCountSublatticeTemp + 1
             end if
 
@@ -326,7 +328,8 @@ subroutine CheckSystem
                 nMaxSpeciesPhase = MAX(nMaxSpeciesPhase, iTempVec(nSolnPhasesSys) - iTempVec(nSolnPhasesSys-1))
                 ! Check if this is a charged phase:
                 if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-                     (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ')) then
+                     (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                     (cSolnPhaseTypeCS(i) == 'SUBM')) then
                     ! Count the number of charged phases:
                     nCountSublattice = nCountSublattice + 1
                     ! Determine the maximum number of sublattice of any stable phase:
@@ -374,7 +377,8 @@ subroutine CheckSystem
             do j = nSpeciesPhaseCS(i-1) + 1, nSpeciesPhaseCS(i)
                 m = m + 1
                 iSpeciesPass(j) = m
-                if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ') then
+                if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ' .OR. &
+                (cSolnPhaseTypeCS(i) == 'SUBM')) then
                     k = iPhaseSublatticeCS(i)
                     iCon1 = iPairIDCS(k,j-nSpeciesPhaseCS(i-1),1)
                     iCon2 = iPairIDCS(k,j-nSpeciesPhaseCS(i-1),2)
@@ -388,7 +392,8 @@ subroutine CheckSystem
             end do
             nMaxSpeciesPhase = MAX(nMaxSpeciesPhase, iTempVec(i) - iTempVec(i-1))
             if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-                 (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ')) then
+                 (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                 (cSolnPhaseTypeCS(i) == 'SUBM')) then
                  nCountSublattice = nCountSublattice + 1
             end if
         end do
