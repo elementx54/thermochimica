@@ -166,15 +166,9 @@ subroutine ParseCSDataBlock
               return
             end if
 
-          elseif (cSolnPhaseTypeCS(i) == 'SUBM') then
+        !  elseif (cSolnPhaseTypeCS(i) == 'SUBM') then
 
-              ! Read in two integers representing the number of species and the number of pairs:
-              read (1,*,IOSTAT = INFO) nPairsSROCS(nCountSublatticeCS,1:2)
-
-              if (INFO /= 0) then
-                INFO = 1600 + i;
-                return
-              end if
+        ! This block would be similat to the SUBG (Line 152:167 up here), but SUBM do not have any in the database.
 
         elseif (cSolnPhaseTypeCS(i) == 'SUBQ') then
             ! Do I need to do this?
@@ -277,7 +271,7 @@ subroutine ParseCSDataBlock
               case ('SUBM')
 
                     ! Parse the data-block section for SUBQ phases:
-                    call ParseCSDataBlockSUBG(i)
+                    call ParseCSDataBlockSUBM(i)
 
             case default
 

@@ -88,8 +88,7 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
 
 
     ! Only proceed if the correct phase type is selected:
-    if (.NOT. (cSolnPhaseType(iSolnIndex) == 'SUBG' .OR. cSolnPhaseType(iSolnIndex) == 'SUBQ').OR. &
-    (cSolnPhaseType(iSolnIndex) == 'SUBM')) return
+    if (.NOT. (cSolnPhaseType(iSolnIndex) == 'SUBG' .OR. cSolnPhaseType(iSolnIndex) == 'SUBQ')) return
 
     ! Define temporary variables for sake of convenience:
     iFirst = nSpeciesPhase(iSolnIndex-1) + 1
@@ -305,10 +304,7 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
         else if (cSolnPhaseType(iSolnIndex) == 'SUBQ') then
             dPowXij = 0.75D0
             dPowYi  = 0.5D0
-        else if (cSolnPhaseType(iSolnIndex) == 'SUBM') then
-            dPowXij = 1D0
-            dPowYi  = 1D0
-       end if
+        end if
         dSum = (iWeight * (dXij(ii,ka)**dPowXij) * (dXij(ii,la)**dPowXij) &
                         * (dXij(jj,ka)**dPowXij) * (dXij(jj,la)**dPowXij) &
                         / ((dYi(ii)**dPowYi) * (dYi(jj)**dPowYi) &
