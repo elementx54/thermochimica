@@ -63,7 +63,7 @@
     !-------------------------------------------------------------------------------------------------------------
 
 
-subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
+subroutine CompExcessGibbsEnergySUBM(iSolnIndex)
 
     USE ModuleThermo
     USE ModuleThermoIO
@@ -784,4 +784,4 @@ subroutine CompExcessGibbsEnergySUBG(iSolnIndex)
 
     return
 
-end subroutine CompExcessGibbsEnergySUBG
+end subroutine CompExcessGibbsEnergySUBM
