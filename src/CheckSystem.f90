@@ -318,7 +318,6 @@ subroutine CheckSystem
             if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
                  (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
                  (cSolnPhaseTypeCS(i) == 'SUBM')) then
-
                 nCountSublatticeTemp = nCountSublatticeTemp + 1
             end if
 
@@ -329,8 +328,8 @@ subroutine CheckSystem
                 nMaxSpeciesPhase = MAX(nMaxSpeciesPhase, iTempVec(nSolnPhasesSys) - iTempVec(nSolnPhasesSys-1))
                 ! Check if this is a charged phase:
                 if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-                (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
-                (cSolnPhaseTypeCS(i) == 'SUBM')) then
+                    (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                    (cSolnPhaseTypeCS(i) == 'SUBM')) then
                     ! Count the number of charged phases:
                     nCountSublattice = nCountSublattice + 1
                     ! Determine the maximum number of sublattice of any stable phase:
@@ -390,14 +389,14 @@ subroutine CheckSystem
                     if (iCon3 > 0) iConstituentPass(k,2,iCon3) = 1
                     if (iCon4 > 0) iConstituentPass(k,2,iCon4) = 1
                 end if
-              end do
-              nMaxSpeciesPhase = MAX(nMaxSpeciesPhase, iTempVec(i) - iTempVec(i-1))
-              if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
-                   (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
-                   (cSolnPhaseTypeCS(i) == 'SUBM')) then
-                   nCountSublattice = nCountSublattice + 1
-              end if
-          end do
+            end do
+            nMaxSpeciesPhase = MAX(nMaxSpeciesPhase, iTempVec(i) - iTempVec(i-1))
+            if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM').OR. &
+                (cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                (cSolnPhaseTypeCS(i) == 'SUBM')) then
+                nCountSublattice = nCountSublattice + 1
+            end if
+        end do
 
         j = nSpeciesPhaseCS(nSolnPhasesSysCS) + 1
         k = nSpeciesCS

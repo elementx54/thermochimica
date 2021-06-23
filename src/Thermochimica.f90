@@ -425,7 +425,7 @@ subroutine Thermochimica
     implicit none
 
 
-    ! Check the input variables::
+    ! Check the input variables:
     if (INFOThermo == 0) call CheckThermoInput
 
     ! Initialize Thermochimica:

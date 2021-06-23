@@ -120,7 +120,7 @@ subroutine CompMolFraction(k)
 
         ! Leave this for now until I improve the estimator:
 
-      case ('QKTO','RKMP','RKMPM','SUBL','SUBLM','SUBG','SUBQ','SUBM')
+        case ('QKTO','RKMP','RKMPM','SUBL','SUBLM','SUBG','SUBQ','SUBM')
 
             ! Perform subminimization:
             call Subminimization(k,lPhasePass)

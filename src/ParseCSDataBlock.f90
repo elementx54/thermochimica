@@ -162,8 +162,8 @@ subroutine ParseCSDataBlock
             read (1,*,IOSTAT = INFO) nPairsSROCS(nCountSublatticeCS,1:2)
 
             if (INFO /= 0) then
-              INFO = 1600 + i;
-              return
+                INFO = 1600 + i;
+                return
             end if
 
         !  elseif (cSolnPhaseTypeCS(i) == 'SUBM') then
@@ -186,8 +186,8 @@ subroutine ParseCSDataBlock
             ! than the number of pair fractions. The # of species indicated in the
             ! header file actually represents the number of pairs. Therefore, there are
             ! fewer species listed than what has been allocated.
-            if (cSolnPhaseTypeCS(i) == 'SUBG' .OR. cSolnPhaseTypeCS(i) == 'SUBQ'.OR. &
-            (cSolnPhaseTypeCS(i) == 'SUBM')) then
+            if ((cSolnPhaseTypeCS(i) == 'SUBG') .OR. (cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
+                (cSolnPhaseTypeCS(i) == 'SUBM')) then
                 if (j >= nSpeciesPhaseCS(i-1) + 1 + nPairsSROCS(nCountSublatticeCS,1) ) then
                     exit LOOP_SpeciesInSolnPhase
                 end if
@@ -201,21 +201,21 @@ subroutine ParseCSDataBlock
             iPhaseCS(j) = i
 
             if ((cSolnPhaseTypeCS(i) == 'SUBG') .OR. (cSolnPhaseTypeCS(i) == 'SUBQ').OR. &
-            (cSolnPhaseTypeCS(i) == 'SUBM')) then
-              ! The following subroutine parses the Gibbs energy equations (entries 3-5):
-              call ParseCSDataBlockGibbs(i,j,iCounterGibbsEqn)
+                (cSolnPhaseTypeCS(i) == 'SUBM')) then
+                ! The following subroutine parses the Gibbs energy equations (entries 3-5):
+                call ParseCSDataBlockGibbs(i,j,iCounterGibbsEqn)
 
-              ! Get pair stoichiometry in terms of constituents
-              read (1,*,IOSTAT = INFO) dConstituentCoefficientsCS(nCountSublatticeCS,j - nSpeciesPhaseCS(i-1),1:5)
+                ! Get pair stoichiometry in terms of constituents
+                read (1,*,IOSTAT = INFO) dConstituentCoefficientsCS(nCountSublatticeCS,j - nSpeciesPhaseCS(i-1),1:5)
 
-              if (cSolnPhaseTypeCS(i) == 'SUBQ') then
-                  ! Read zeta (FNN/SNN ratio)
-                  ! In SUBQ zeta can differ for each FNN pair
-                  read (1,*,IOSTAT = INFO) dZetaSpeciesCS(nCountSublatticeCS,j - nSpeciesPhaseCS(i-1))
-              end if
+                if (cSolnPhaseTypeCS(i) == 'SUBQ') then
+                    ! Read zeta (FNN/SNN ratio)
+                    ! In SUBQ zeta can differ for each FNN pair
+                    read (1,*,IOSTAT = INFO) dZetaSpeciesCS(nCountSublatticeCS,j - nSpeciesPhaseCS(i-1))
+                end if
             else
-              ! The following subroutine parses the Gibbs energy equations (entries 3-5):
-              call ParseCSDataBlockGibbs(i,j,iCounterGibbsEqn)
+                ! The following subroutine parses the Gibbs energy equations (entries 3-5):
+                call ParseCSDataBlockGibbs(i,j,iCounterGibbsEqn)
             endif
 
             ! Entry 6: Definition of temperature and pressure dependence terms (I don't understand the reasoning):

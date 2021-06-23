@@ -139,7 +139,7 @@ subroutine CompThermoData
     ! Loop through all species in the system:
     LOOP_nPhasesCS: do n = 1, nSolnPhasesSysCS
         if ((cSolnPhaseTypeCS(n) == 'SUBG') .OR. (cSolnPhaseTypeCS(n) == 'SUBQ').OR. &
-        (cSolnPhaseTypeCS(n) == 'SUBM')) then
+            (cSolnPhaseTypeCS(n) == 'SUBM')) then
             iSublPhaseIndex = iPhaseSublatticeCS(n)
             iFirst = nSpeciesPhaseCS(n - 1) + 1
             dChemicalPotentialTemp = 0D0
@@ -565,7 +565,7 @@ subroutine CompThermoData
 
         if ((cSolnPhaseTypeCS(i) == 'SUBL').OR.(cSolnPhaseTypeCS(i) == 'SUBLM') &
         .OR.(cSolnPhaseTypeCS(i) == 'SUBG').OR.(cSolnPhaseTypeCS(i) == 'SUBQ' ) &
-       .OR.(cSolnPhaseTypeCS(i) == 'SUBM')) nCounter = nCounter + 1
+        .OR.(cSolnPhaseTypeCS(i) == 'SUBM')) nCounter = nCounter + 1
 
         LOOP_Param: do j = nParamPhaseCS(i-1) + 1, nParamPhaseCS(i)
 
