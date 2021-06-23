@@ -415,13 +415,6 @@ subroutine CheckSystemExcess
 
                 nParamPhase(nCounter) = nParam
 
-!              case default
-!              !The character string representing input units is not recognized.
-               INFOThermo = 17
-               return
-!              end select
-
-
           case ('SUBM')
 
           !Copied from SUBQ SUBG case and deletes nPairsSRO routines
