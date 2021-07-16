@@ -54,7 +54,6 @@ subroutine InitThermo
     nSpecies       = 0
     nSolnPhases    = 0
     nSolnPhasesSys = 0
-    nConPhasesSys  = 0
     nParam         = 0
     nMagParam      = 0
     nMaxParam      = nParamMax

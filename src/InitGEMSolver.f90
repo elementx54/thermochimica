@@ -303,9 +303,7 @@ subroutine InitGEMSolver
                 ! Check to make sure that the phase can be added:
                 call CheckPhaseChange(lPhasePass,k)
 
-                if (k == 0) then
-                    exit LOOP_CheckPhaseAssemblage
-                elseif (k > nElements + nSolnPhases) then
+                if (k > nElements + nSolnPhases) then
                     ! A pure condensed phase should be removed.
                     k = k - nElements - nSolnPhases
                     iAssemblage(k)          = iAssemblage(nConPhases)
@@ -313,6 +311,8 @@ subroutine InitGEMSolver
                     iAssemblage(nConPhases) = 0
                     dMolesPhase(nConPhases) = 0D0
                     nConPhases = nConPhases - 1
+                elseif (k == 0) then
+                    exit LOOP_CheckPhaseAssemblage
                 else
                     ! Placeholder...the phase assemblage has failed...
                     exit LOOP_CheckPhaseAssemblage
