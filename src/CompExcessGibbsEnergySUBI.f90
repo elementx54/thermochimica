@@ -142,15 +142,9 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
         do i = 1, nConstituentSublattice(iSPI,1)
             dSub1Total = dSub1Total + dSiteFraction(iSPI,1,i)
         end do
-        ! print*,"dSub1Total",dSub1Total
         do i = 1, nConstituentSublattice(iSPI,1)
             dSiteFraction(iSPI,1,i) = dSiteFraction(iSPI,1,i) / dSub1Total
         end do
-
-        ! print*,"cConstituentNameSUB(iSPI,1,i):   ",cConstituentNameSUB(iSPI,1,:)
-        ! print*,"dSiteFraction(iSPI,1,:):   ",dSiteFraction(iSPI,1,:)
-        !dSiteFraction(iSPI,1,1) = 0.5013D0
-        !dSiteFraction(iSPI,1,2) = 0.4987D0
 
         ! Compute Q
         q = 0D0
@@ -182,19 +176,11 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
         do i = 1, nConstituentSublattice(iSPI,2)
             dSub2Total = dSub2Total + dSiteFraction(iSPI,2,i)
         end do
-        ! print*,"dSub2Total",dSub2Total
         do i = 1, nConstituentSublattice(iSPI,2)
             dSiteFraction(iSPI,2,i) = dSiteFraction(iSPI,2,i) / dSub2Total
             ! find site fraction of vacancies
             if (cConstituentNameSUB(iSPI,2,i) == 'Va') yva = dSiteFraction(iSPI,2,i)
         end do
-
-        ! print*,"cConstituentNameSUB(iSPI,2,i):   ",cConstituentNameSUB(iSPI,2,:)
-        ! print*,"dSiteFraction(iSPI,2,:):   ",dSiteFraction(iSPI,2,:)
-        !dSiteFraction(iSPI,2,1) = 0.40820D0
-        !dSiteFraction(iSPI,2,2) = 0.58966D0
-        !dSiteFraction(iSPI,2,3) = 4.8623D-12
-        !dSiteFraction(iSPI,2,4) = 2.1448D-3
 
         ! Compute P
         p = 0D0
@@ -209,7 +195,6 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
 
         ! Compute number of moles and its derivatives
         dMol = (p + (q * (1D0 - yva)))
-        ! print*,"dMol",dMol
         do j = iFirst, iLast
 
             dTemp1 = 0D0
@@ -245,9 +230,6 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                 dMolDerivatives(n) = dMolDerivatives(n) + (p-q*yva-lc2)*lc1/(dSub2Total*dMol**2)
             end if
         end do
-        ! print*,""
-        ! print*,"dMolDerivatives(:)",dMolDerivatives(:)
-        ! print*,""
 
         ! Correct the mole fractions of phase components by the site fractions of the constituents
         dSum = 0D0
@@ -258,20 +240,16 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
             c = iConstituentSublattice(iSPI,2,m)
             d = iConstituentSublattice(iSPI,1,m)
 
-            if ((cConstituentNameSUB(iSPI,2,c) == 'Va') .OR. &
-                (dSublatticeCharge(iSPI,2,c) == 0D0)) then
-                if (d > 0) dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,1,d)
-
-                if (c > 0) dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,2,c)
-
+            if (cConstituentNameSUB(iSPI,2,c) == 'Va') then
+                dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,1,d) * q
+                dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,2,c)
+            else if (dSublatticeCharge(iSPI,2,c) == 0D0) then
+                dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,2,c) * q
             else
-                if (d > 0) dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,1,d) / dSublatticeCharge(iSPI,1,d)
-
-                if (c > 0) dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,2,c)
-
+                dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,1,d)
+                dMolFraction(i) = dMolFraction(i) * dSiteFraction(iSPI,2,c)
             end if
             dSum = dSum + dMolFraction(i)
-            ! print*,"dSum",dSum
         end do LOOP_CorrectX
 
         ! Normalize mole fractions and compute number of mole atoms per mole (yes that makes sense, don't think about it)
@@ -290,10 +268,6 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                 dMolAtoms = dMolAtoms + dMolFraction(i) * (dSublatticeCharge(iSPI,1,d) - dSublatticeCharge(iSPI,2,c))
             end if
         end do
-
-        ! print*,""
-        ! print*,"dMolFraction(:):   ",dMolFraction(:)
-        ! print*,""
 
         dStoichSublattice(iSPI,1) = p
         dStoichSublattice(iSPI,2) = q
@@ -1365,6 +1339,7 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
         ! print*,"p",p,"   q",q
         ! print*,"gref",gref*dIdealConstant * dTemperature
         ! print*,"gideal",gideal*dIdealConstant * dTemperature
+        ! print*,"gexcess",gexcess*dIdealConstant * dTemperature
         ! print*,"gref+gideal:", (gref+gideal)*dIdealConstant * dTemperature
         ! print*,"gref+gideal+gexcess:", (gref+gideal+gexcess)*dIdealConstant * dTemperature
         ! print*,""
@@ -1449,15 +1424,10 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
 
         ! Compute the chemical potential for each phase component assuming ideal mixing:
         LOOP_Ideal: do i = iFirst, iLast
-            ! print*,""
-            ! print*,"i",i
-            ! print*,""
             ! Relative species index:
             m = i - iFirst + 1
             k1 = iConstituentSublattice(iSPI,1,m)
             k2 = iConstituentSublattice(iSPI,2,m)
-            !cc1 = dSublatticeCharge(iSPI,1,k1)
-            !print*,"k1",k1
 
             kc1 = 1D0
             ! cation / vacancy
@@ -1484,20 +1454,14 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                 ! cation / (anion or vacancy)
                 if (k1 > 0) then
                     dydn = -kc2 * dSiteFraction(iSPI,1,j) / dSub1Total
-                    ! print*,"dydn - Cation Sublattice - 1:   ",dydn
                     if (j == k1) dydn = dydn + kc2 / dSub1Total
                     dChemicalPotential(i) = dChemicalPotential(i) + dydn * dgdc1(j) * dMolAtoms / dMol
-                    ! print*,"dydn - Cation Sublattice - Final:   ",dydn
-                    ! print*,"dydn * dgdc1(j) * dMolAtoms / dMol",dydn * dgdc1(j) * dMolAtoms / dMol
-                    ! print*,""
                 end if
             end do
-            ! print*,""
 
             dTest = 0D0
 
             do j = 1, nConstituentSublattice(iSPI,2)
-                ! print*,"j",j
                 ! cation / vacancy
                 if (cConstituentNameSUB(iSPI,2,k2) == 'Va') then
                     dydn = -dSiteFraction(iSPI,2,j)*(dSub1Total*cc1+(q-cc1)*dSub2Total*yva)/(dSub1Total*dSub2Total*q)
@@ -1512,9 +1476,11 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                     dydn = -dSiteFraction(iSPI,2,j) / dSub2Total
                     if (cConstituentNameSUB(iSPI,2,j) == 'Va') then
                         ! vacancy
-                    else
-                        ! neutral or anion
+                    else if (dSublatticeCharge(iSPI,2,j) == 0D0) then
+                        ! neutral
                         if (j == k2) dydn = dydn + 1 / dSub2Total
+                    else
+                        ! anion
                     end if
                 ! cation / anion
                 else
@@ -1528,13 +1494,8 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                         if (j == k2) dydn = dydn + cc1 / dSub2Total
                     end if
                 end if
-                ! print*,"dydn - Anion Sublattice:   ",dydn
                 dChemicalPotential(i) = dChemicalPotential(i) + dydn * dgdc2(j) * dMolAtoms / dMol
             end do
-            ! print*,""
-            ! print*,"-------------------------------------"
-            ! print*,""
-
         end do LOOP_Ideal
 
         ! print*,"_______________________________________________________________________________"
