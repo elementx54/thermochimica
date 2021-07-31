@@ -1497,17 +1497,7 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                 dChemicalPotential(i) = dChemicalPotential(i) + dydn * dgdc2(j) * dMolAtoms / dMol
             end do
         end do LOOP_Ideal
-
-        ! print*,"_______________________________________________________________________________"
-        ! print *, ' System Component 2', ' Mass [mol]  ', 'Chemical potential [J/mol]'
-        ! print *, ' ---------------- ', ' ----------  ', '--------------------------'
-        ! do i = 1, nSpecies
-        !     print '(A14,A1,ES15.4,A1, ES14.6)', cSpeciesName(i), ' ', dMolesSpecies(i), ' ', &
-        !     dChemicalPotential(i) * dIdealConstant * dTemperature
-        !
-        ! end do
-        ! print*,"_______________________________________________________________________________"
-
+        
         deallocate(dgdc1,dgdc2)
         deallocate(dMolDerivatives)
     end if IF_SUBL
