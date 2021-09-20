@@ -960,7 +960,7 @@ subroutine CompExcessGibbsEnergySUBI(iSolnIndex)
                     ! Derivative with respect to Va
                     else if (cConstituentNameSUB(iSPI,2,i) == 'Va') then
                         ! prefactor part
-                        dgdc2(i) = dgdc2(i) + gex * 2 / yva
+                        dgdc2(i) = dgdc2(i) + gex / yva
                         ! f part
                         dgdc2(i) = dgdc2(i) - yCi * gex / (3D0 * v)
                         ! other v part
